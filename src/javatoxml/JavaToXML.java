@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 gyankos
+ * Copyright (C) 2014 Giacomo Bergami <giacomo90@libero.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,11 +122,12 @@ public class JavaToXML {
                         Element method = xml.createElement("method");
                         method.setAttribute("name", pmethod.getName());
                         method.setAttribute("returnType", pmethod.getType().toString());
-                        switch(pmethod.getModifiers()) {
-                            case ModifierSet.STATIC:
-                                method.setAttribute("modifier", "static");
-                                break;
-                        }
+                        boolean skipmethod = false;
+                        int getMod = pmethod.getModifiers();
+                        if (ModifierSet.isPrivate(getMod)||ModifierSet.isProtected(getMod)||ModifierSet.isNative(getMod))
+                            continue;
+                        else if (ModifierSet.isStatic(getMod))
+                            method.setAttribute("modifier", "static");
                         if (pmethod.getParameters()!=null) {
                             for (Parameter y:pmethod.getParameters()) {
                                 Element param = xml.createElement("param");
@@ -173,3 +174,4 @@ public class JavaToXML {
     }
     
 }
+
